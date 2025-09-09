@@ -42,19 +42,16 @@ export class BaseApiLb4Application extends BootMixin(
     dotenv.config();
 
     // CORS Configuration
-    this.bind(RestBindings.CORS).to({
-      origin: [
-        process.env.FRONTEND_URL || 'https://benetti-casa-ui.vercel.app',
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'https://localhost:3000'
-      ],
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-      preflightContinue: false,
-      optionsSuccessStatus: 204,
-      maxAge: 86400,
-      credentials: true,
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    this.configure(RestBindings.SERVER).to({
+      cors: {
+        origin: [
+          process.env.FRONTEND_URL || 'https://benetti-casa-ui.vercel.app',
+          'http://localhost:3000',
+          'http://localhost:3001'
+        ],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+      }
     });
 
     // Configuración de las bindings
