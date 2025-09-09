@@ -33,6 +33,7 @@
     "openapi-spec": "node ./dist/openapi-spec",
     "prestart": "npm run rebuild",
     "start": "node -r dotenv/config dist/index.js",
+    "start:render": "npm run migrate && node dist/index.js",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "npm run clean && npm run build",
     "server-stage": "pm2 start ecosystem.config.js --env stage",
