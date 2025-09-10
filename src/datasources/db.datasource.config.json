@@ -6,5 +6,8 @@
   "user": "wtcdb",
   "password": "Guao2023",
   "port": 5432,
-  "url": ""
+  "url": "",
+  "connectionTimeout": 30000,
+  "acquireTimeout": 30000,
+  "timeout": 30000
 }
