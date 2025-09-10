@@ -126,13 +126,21 @@ export class BaseApiLb4Application extends BootMixin(
     this.setupBinding();
   }
   protected setupBinding(): void {
+    // CAMBIO CRÍTICO: Forzar variables de entorno en producción
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     this.bind(DataSourceBindings.DB_DATASOURCE_CONFIG).to({
-      name: dbConfig.name || process.env.DB_NAME,
-      url: process.env.DB_URL || dbConfig.url,
-      database: process.env.DB_DATABASE || dbConfig.database,
+      name: process.env.DB_NAME || dbConfig.name,
+      url: process.env.DB_URL || (isProduction ? undefined : dbConfig.url),
+      database: process.env.DB_DATABASE || (isProduction ? undefined : dbConfig.database),
       connector: process.env.DB_CONNECTOR || dbConfig.connector,
-      host: process.env.DB_HOST || dbConfig.host,
-      port: process.env.DB_PORT || dbConfig.port,
+      host: process.env.DB_HOST || (isProduction ? undefined : dbConfig.host),
+      port: process.env.DB_PORT || (isProduction ? undefined : dbConfig.port),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      connectionTimeout: 30000,
+      acquireTimeout: 30000,
+      timeout: 30000,
     });
     this.bind(DataSourceBindings.DB_DATASOURCE).toClass(DbDataSource);
     this.bind(PasswordHasherBindings.PASSWORD_HASHER).toClass(BcryptHasher);
