@@ -19,7 +19,7 @@ import {BcryptHasher} from '../services/bcrypt.service';
  * This class will be bound to the application as a `LifeCycleObserver` during
  * `boot`
  */
-// @lifeCycleObserver('') // TEMPORALMENTE DESHABILITADO PARA TESTING
+@lifeCycleObserver('')
 export class TheSystemObserver implements LifeCycleObserver {
   constructor(
     @inject(CoreBindings.APPLICATION_INSTANCE) private app: Application,
@@ -44,10 +44,6 @@ export class TheSystemObserver implements LifeCycleObserver {
   async start(): Promise<void> {
     // Add your logic for start
     console.log('START INITIAL CREATOR');
-    
-    // TEMPORALMENTE DESHABILITADO PARA TESTING SIN BD
-    console.log('Observer deshabilitado temporalmente para testing');
-    return;
     
     //const deleteAllRes: any = await this.resetAll();
     //console.log(deleteAllRes.message);
