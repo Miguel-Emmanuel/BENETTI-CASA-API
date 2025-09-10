@@ -126,11 +126,20 @@ export class BaseApiLb4Application extends BootMixin(
     this.setupBinding();
   }
   protected setupBinding(): void {
-    // CAMBIO CRÍTICO: Configuración simplificada para Render
+    // DEBUG: Forzar configuración de producción SIEMPRE en Render
     const isProduction = process.env.NODE_ENV === 'production';
+    const hasDbUrl = !!process.env.DB_URL;
     
-    // En producción, usar solo la URL completa de la base de datos
-    const dbConfigForBind = isProduction ? {
+    console.log('=== DATABASE CONFIG DEBUG ===');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('isProduction:', isProduction);
+    console.log('DB_URL exists:', hasDbUrl);
+    console.log('DB_URL value:', process.env.DB_URL ? 'SET' : 'NOT_SET');
+    
+    // FORZAR PRODUCCIÓN: Si tenemos DB_URL, usar configuración de producción
+    const useProductionConfig = isProduction || hasDbUrl;
+    
+    const dbConfigForBind = useProductionConfig ? {
       name: 'db',
       connector: 'postgresql',
       url: process.env.DB_URL,
@@ -149,6 +158,10 @@ export class BaseApiLb4Application extends BootMixin(
       acquireTimeout: 30000,
       timeout: 30000,
     };
+
+    console.log('Using production config:', useProductionConfig);
+    console.log('Final DB config:', JSON.stringify(dbConfigForBind, null, 2));
+    console.log('=== END DEBUG ===');
 
     this.bind(DataSourceBindings.DB_DATASOURCE_CONFIG).to(dbConfigForBind);
     this.bind(DataSourceBindings.DB_DATASOURCE).toClass(DbDataSource);
