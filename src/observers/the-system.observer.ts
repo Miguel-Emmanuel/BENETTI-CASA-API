@@ -19,7 +19,7 @@ import {BcryptHasher} from '../services/bcrypt.service';
  * This class will be bound to the application as a `LifeCycleObserver` during
  * `boot`
  */
-@lifeCycleObserver('')
+// @lifeCycleObserver('') // TEMPORALMENTE DESHABILITADO PARA TESTING
 export class TheSystemObserver implements LifeCycleObserver {
   constructor(
     @inject(CoreBindings.APPLICATION_INSTANCE) private app: Application,
