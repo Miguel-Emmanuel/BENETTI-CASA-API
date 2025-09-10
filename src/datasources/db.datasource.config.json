@@ -2,6 +2,7 @@
   "name": "db",
   "connector": "postgresql",
   "url": "postgresql://wtcdb:7qnDgDeX4ZfacOSehO0vRzyfXePNfxn2@dpg-d3090u7diees73era8mg-a.oregon-postgres.render.com/casa_benetti_cy9b",
+  "ssl": true,
   "connectionTimeout": 30000,
   "acquireTimeout": 30000,
   "timeout": 30000
