@@ -1,12 +1,7 @@
 {
   "name": "db",
   "connector": "postgresql",
-  "database": "${DB_DATABASE:casa_benetti}",
-  "host": "${DB_HOST:localhost}",
-  "user": "${DB_USER:wtcdb}",
-  "password": "${DB_PASSWORD:Guao2023}",
-  "port": "${DB_PORT:5432}",
-  "url": "${DB_URL:}",
+  "url": "",
   "connectionTimeout": 30000,
   "acquireTimeout": 30000,
   "timeout": 30000
