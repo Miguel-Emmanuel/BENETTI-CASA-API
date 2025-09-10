@@ -1,3 +1,4 @@
+export * from './auth.controller';
 export * from './branch.controller';
 // export * from './file-download.controller';
 // export * from './file-upload.controller';
