@@ -44,6 +44,11 @@ export class TheSystemObserver implements LifeCycleObserver {
   async start(): Promise<void> {
     // Add your logic for start
     console.log('START INITIAL CREATOR');
+    
+    // TEMPORALMENTE DESHABILITADO PARA TESTING SIN BD
+    console.log('Observer deshabilitado temporalmente para testing');
+    return;
+    
     //const deleteAllRes: any = await this.resetAll();
     //console.log(deleteAllRes.message);
     const organizationsRes: any = await this.createOrganizations();
