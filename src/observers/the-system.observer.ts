@@ -6,12 +6,14 @@ import dayjs from 'dayjs';
 import {PasswordHasherBindings} from '../keys';
 import {User, UserData} from '../models';
 import {
+  DayExchangeRateRepository,
   ModuleRepository,
   OrganizationRepository,
+  RoleModuleRepository,
   RoleRepository,
   UserCredentialsRepository, UserDataRepository, UserRepository
 } from '../repositories';
-import {organizationSeeds, roleSeeds, userSeeds} from '../seed-data';
+import {dayExchangeRateSeeds, organizationSeeds, roleModuleSeeds, roleSeeds, userSeeds} from '../seed-data';
 import {modulesSeed} from '../seed-data/modules';
 import {BcryptHasher} from '../services/bcrypt.service';
 
@@ -35,6 +37,10 @@ export class TheSystemObserver implements LifeCycleObserver {
     public userCredentialsRepository: UserCredentialsRepository,
     @repository(UserDataRepository)
     public userDataRepository: UserDataRepository,
+    @repository(DayExchangeRateRepository)
+    public dayExchangeRateRepository: DayExchangeRateRepository,
+    @repository(RoleModuleRepository)
+    public roleModuleRepository: RoleModuleRepository,
     @inject(PasswordHasherBindings.PASSWORD_HASHER) public hasher: BcryptHasher
   ) { }
 
@@ -55,6 +61,10 @@ export class TheSystemObserver implements LifeCycleObserver {
     console.log(sysUserRoleRes.message);
     const sysUserRes: any = await this.createSysUsers();
     console.log(sysUserRes.message);
+    const dayExchangeRes: any = await this.createDayExchangeRates();
+    console.log(dayExchangeRes.message);
+    const roleModulesRes: any = await this.createRoleModules();
+    console.log(roleModulesRes.message);
   }
 
   async resetAll(): Promise<Object> {
@@ -228,6 +238,60 @@ export class TheSystemObserver implements LifeCycleObserver {
         sysUserLabel += `${user.firstName} ${user.lastName}, `;
       }
       return {message: `There are Users in the DB: ${sysUserLabel}`};
+    }
+  }
+
+  async createDayExchangeRates(): Promise<Object> {
+    const exchangeRatesCount = await this.dayExchangeRateRepository.count();
+    if (exchangeRatesCount.count === 0) {
+      for (let index = 0; index < dayExchangeRateSeeds.length; index++) {
+        const element = dayExchangeRateSeeds[index];
+        await this.dayExchangeRateRepository.create(element);
+      }
+      return {message: 'Day Exchange Rates Created'};
+    } else {
+      return {
+        message: `There are Day Exchange Rates in the DB`,
+      };
+    }
+  }
+
+  async createRoleModules(): Promise<Object> {
+    const roleModulesCount = await this.roleModuleRepository.count();
+    if (roleModulesCount.count === 0) {
+      for (let index = 0; index < roleModuleSeeds.length; index++) {
+        const element = roleModuleSeeds[index];
+        
+        // Buscar el rol por nombre
+        const role = await this.roleRepository.findOne({
+          where: {name: element.roleName},
+        });
+        
+        // Buscar el módulo por nombre
+        const module = await this.moduleRepository.findOne({
+          where: {name: element.moduleName},
+        });
+        
+        if (role && module) {
+          const roleModuleData = {
+            roleId: role.id,
+            moduleId: module.id,
+            create: element.create,
+            read: element.read,
+            update: element.update,
+            del: element.del
+          };
+          
+          await this.roleModuleRepository.create(roleModuleData);
+        } else {
+          console.log(`Role or Module not found: ${element.roleName} - ${element.moduleName}`);
+        }
+      }
+      return {message: 'Role Modules Created'};
+    } else {
+      return {
+        message: `There are Role Modules in the DB`,
+      };
     }
   }
 }
